@@ -6,6 +6,8 @@ services:
         command: "node /binaris/server.js"
         ports:
             - 3000:3000
+        environment:
+            PORT: 3000
     bench-node:
         image: jordi/ab
         command: bash -c "sleep 1; ab -n 50000 http://node:3000/"
