@@ -1,0 +1,35 @@
+version: '2.0'
+
+services:
+    node:
+        build: .
+        command: "node /binaris/server.js"
+        ports:
+            - 3000:3000
+    bench-node:
+        image: jordi/ab
+        command: bash -c "sleep 1; ab -n 50000 http://node:3000/"
+        depends_on:
+            - node
+    nginx:
+        build: ./nginx
+        depends_on:
+            - node
+        command: bash -c "sleep 2; nginx -c /etc/nginx/nginx.conf"
+    bench-nginx:
+        image: jordi/ab
+        command: bash -c "sleep 1; ab -n 50000 http://nginx:8001/"
+        depends_on:
+            - nginx
+    redbird:
+        build: .
+        command: "node /binaris/redbird.js"
+        ports:
+            - 8002:8002
+        depends_on:
+            - node
+    bench-redbird:
+        image: jordi/ab
+        command: bash -c "sleep 1; ab -n 50000 http://redbird:8002/"
+        depends_on:
+            - redbird
